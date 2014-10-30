@@ -1,0 +1,5 @@
+Pyro4>=4.25
+serpent>=1.7
+https://github.com/ya-mouse/pylibssh2/archive/master.zip#egg=pylibssh2
+python-fsmsock
+python-fsmipmi
