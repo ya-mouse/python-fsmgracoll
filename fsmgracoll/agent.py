@@ -8,3 +8,5 @@ class AgentClient():
             self._tag = (tag[0], '')
         else:
             self._tag = (tag[0], '.'+tag[1])
+        if not self._agent:
+            self._agent = lambda x,y,z: print(x,y,z)
