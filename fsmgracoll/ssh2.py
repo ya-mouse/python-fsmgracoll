@@ -8,7 +8,7 @@ class SSHAgent(SSHClient, AgentClient):
         SSHClient.__init__(self, host, interval, user, passwd, cmds)
         AgentClient.__init__(self, agent, type, tag)
 
-    def _value(self, data, tm):
+    def on_data(self, data, tm):
         for s in str(data, 'utf-8').split('\r\n'):
             if s == '':
                 continue

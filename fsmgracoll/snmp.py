@@ -14,7 +14,7 @@ class SnmpUdpAgent(proto.snmp.SnmpUdpClient, AgentClient):
         proto.snmp.SnmpUdpClient.__init__(self, host, interval, version, community, [x[0] for x in self._points.values()])
         AgentClient.__init__(self, agent, type, tag)
 
-    def _value(self, oid, val, tm):
+    def on_data(self, oid, val, tm):
         d = self._oids[str(oid)]
         v = float(SnmpUdpAgent._get_value(val, d[1][1])) / d[1][2]
 #        self._agent.send(self._tag[0]+'.'+d[0]+self._tag[1], v, tm)
