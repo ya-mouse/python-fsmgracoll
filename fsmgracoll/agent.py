@@ -67,9 +67,9 @@ def collector(name, cfg, agent, logger, do_profile):
             pr.disable()
             pr.create_stats()
             pr.dump_stats('{0}-{1}.prof'.format(name, os.getpid()))
-        signal.signal(signal.SIGINT, signal.SIG_DFL)
-        signal.signal(signal.SIGQUIT, signal.SIG_DFL)
-        signal.signal(signal.SIGTERM, signal.SIG_DFL)
+#        signal.signal(signal.SIGINT, signal.SIG_DFL)
+#        signal.signal(signal.SIGQUIT, signal.SIG_DFL)
+#        signal.signal(signal.SIGTERM, signal.SIG_DFL)
         # WRND: atexit wouldn't be called on sys.exit()
         fsm.atexit()
         sys.exit(0)
@@ -88,4 +88,5 @@ def collector(name, cfg, agent, logger, do_profile):
     while fsm.run():
         fsm.tick()
 
-    os.kill(os.getpid(), signal.SIGTERM)
+    #signal_handler(signal.SIGTERM, None)
+    #os.kill(os.getpid(), signal.SIGTERM)
