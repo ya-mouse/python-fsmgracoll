@@ -1,7 +1,8 @@
+from time import time
 from fsmsock import proto
 from fsmipmi.proto import IpmiUdpClient
 
-from agent import AgentClient
+from .agent import AgentClient
 
 class IpmiUdpAgent(IpmiUdpClient, AgentClient):
     def __init__(self, agent, host, type, tag, interval, user='ADMIN', passwd='ADMIN', cmds=[], vendors={}, sdrs=()):
@@ -9,11 +10,11 @@ class IpmiUdpAgent(IpmiUdpClient, AgentClient):
         AgentClient.__init__(self, agent, type, tag)
 
     def on_data(self, point, val, tm):
-        print(self._tag[0]+'.'+point+self._tag[1], val, tm)
+        self._agent(self._tag[0]+'.'+point+self._tag[1], val, tm)
 
     def stop(self):
         # Run forever
-        pass
+        self._expire = time() + 5.0
 
 if __name__ == '__main__':
     import sys

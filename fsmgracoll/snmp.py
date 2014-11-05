@@ -1,6 +1,6 @@
 from fsmsock import proto
 
-from agent import AgentClient
+from .agent import AgentClient
 
 TYPE_INT16      = 1
 TYPE_UINT16     = 2
@@ -17,8 +17,16 @@ class SnmpUdpAgent(proto.snmp.SnmpUdpClient, AgentClient):
     def on_data(self, oid, val, tm):
         d = self._oids[str(oid)]
         v = float(SnmpUdpAgent._get_value(val, d[1][1])) / d[1][2]
-#        self._agent.send(self._tag[0]+'.'+d[0]+self._tag[1], v, tm)
-        print(self._tag[0]+'.'+d[0]+self._tag[1], v, tm)
+        self._agent.send(self._tag[0]+'.'+d[0]+self._tag[1], v, tm)
+
+    def on_disconnect(self):
+        print('ON DISCON')
+        # Do not actually remove ourself from async
+        self.disconnect()
+
+    def stop(self):
+        # Run forever
+        self._expire = time() + 5.0
 
     @staticmethod
     def _get_value(v, t):
@@ -29,10 +37,6 @@ class SnmpUdpAgent(proto.snmp.SnmpUdpClient, AgentClient):
         elif t == TYPE_FLOAT32:
             return unpack('f', pack('I', v))[0]
         return None
-
-    def stop(self):
-        # Run forever
-        pass
 
 if __name__ == '__main__':
     import sys

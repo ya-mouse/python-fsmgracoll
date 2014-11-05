@@ -1,7 +1,8 @@
+from time import time
 from fsmsock import proto
 from fsmssh2.proto import SSHClient
 
-from agent import AgentClient
+from .agent import AgentClient
 
 class SSHAgent(SSHClient, AgentClient):
     def __init__(self, agent, host, type, tag, interval, user, passwd, cmds):
@@ -16,14 +17,13 @@ class SSHAgent(SSHClient, AgentClient):
                 k,v = s.split(' ', 2)
                 if k == '':
                     continue
-                #self._agent.send(self._tag[0]+'.'+k+self._tag[1], float(v), tm)
-                print(self._tag[0]+'.'+k+self._tag[1], float(v), tm)
+                self._agent.send(self._tag[0]+'.'+k+self._tag[1], float(v), tm)
             except Exception:
                 continue
 
     def stop(self):
         # Run forever
-        pass
+        self._expire = time() + 5.0
 
 if __name__ == '__main__':
     import sys
