@@ -19,11 +19,11 @@ def log_uncaught_exceptions(ex_cls, ex, tb):
 def main():
     procs = []
 
-    setproctitle(opt_name)
+    setproctitle(opt_name+'-main')
 
     def signal_handler(signum, frame):
-        for p in procs:
-            p.terminate()
+#        for p in procs:
+#            p.terminate()
         signal.signal(signal.SIGINT, signal.SIG_DFL)
         signal.signal(signal.SIGQUIT, signal.SIG_DFL)
         signal.signal(signal.SIGTERM, signal.SIG_DFL)
@@ -45,7 +45,7 @@ def main():
         a = Graphite(opt_graphite[0], opt_graphite[1])
         begin = len(config) - cnt
         end = begin + min(cnt, wks)
-        p = multiprocessing.Process(target = collector, args = (opt_name+str(begin)+'-'+str(end), config[begin:end], a, logger, opt_profile))
+        p = multiprocessing.Process(target = collector, args = (opt_name+'-'+str(begin)+'-'+str(end), config[begin:end], a, logger, opt_profile))
         procs.append(p)
         p.daemon = True
         p.start()
@@ -61,7 +61,7 @@ if __name__ == '__main__':
         #usage()
         sys.exit(1)
 
-    opt_name='gracoll'
+    opt_name='gracolly'
     opt_log = '/var/log/{name}.log'
     opt_pid = '/var/run/{name}.pid'
     opt_workers = 1
