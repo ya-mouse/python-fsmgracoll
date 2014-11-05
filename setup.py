@@ -17,7 +17,7 @@ setup(
     version='0.1',
     description='Finite State Machine Graphite collectors for Python',
     author='Anton D. Kachalov',
-    scripts=['gracolli'],
+    scripts=['gracolly'],
     packages=find_packages(),
     platforms='any',
     zip_safe=False,
