@@ -1,0 +1,111 @@
+#!/usr/bin/python3
+import os, sys
+import signal
+import traceback
+import multiprocessing
+from setproctitle import setproctitle
+
+import cProfile
+
+import getopt, logging
+from logging.handlers import TimedRotatingFileHandler
+
+from fsmgracoll import collector, Graphite
+
+def log_uncaught_exceptions(ex_cls, ex, tb):
+    logger.critical(''.join(traceback.format_tb(tb)))
+    logger.critical('{0}: {1}'.format(ex_cls, ex))
+
+def main():
+    procs = []
+
+    setproctitle(opt_name)
+
+    def signal_handler(signum, frame):
+        for p in procs:
+            p.terminate()
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
+        signal.signal(signal.SIGQUIT, signal.SIG_DFL)
+        signal.signal(signal.SIGTERM, signal.SIG_DFL)
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGQUIT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+
+    from metrics import config
+
+    cnt = len(config)
+    # Number of elements per worker
+    wks = int(cnt / opt_workers)
+    if cnt % opt_workers != 0:
+        wks += 1
+
+    while cnt > 0:
+        a = Graphite(opt_graphite[0], opt_graphite[1])
+        begin = len(config) - cnt
+        end = begin + min(cnt, wks)
+        p = multiprocessing.Process(target = collector, args = (opt_name+str(begin)+'-'+str(end), config[begin:end], a, logger, opt_profile))
+        procs.append(p)
+        p.daemon = True
+        p.start()
+        cnt -= wks
+
+    p.join()
+
+if __name__ == '__main__':
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'n:c:w:p:l:g:', ['name=', 'config-dir=', 'workers=', 'pid=', 'log=', 'graphite=', 'profile'])
+    except getopt.GetoptError as err:
+        print(err)
+        #usage()
+        sys.exit(1)
+
+    opt_name='gracoll'
+    opt_log = '/var/log/{name}.log'
+    opt_pid = '/var/run/{name}.pid'
+    opt_workers = 1
+    opt_cfgdir = '/etc/{name}'
+    opt_profile = False
+    opt_graphite = ['localhost', 42000]
+    for o, a in opts:
+        if o in ('-c', '--config-dir'):
+            opt_cfgdir = a
+        elif o in ('-w', '--workers'):
+            opt_workers = int(a)
+        elif o in ('-p', '--pid'):
+            opt_pid = a
+        elif o in ('-l', '--log'):
+            opt_log = a
+        elif o in ('-n', '--name'):
+            opt_name = a
+        elif o in ('-g', '--graphite'):
+            opt_graphite = a.split(r':')
+            if len(opt_graphite) != 2:
+               opt_graphite = [opt_graphite[0], 42000]
+        elif o == '--profile':
+            opt_profile = True
+        else:
+            assert False, 'unknown option'
+
+    opt_log = opt_log.format(name=opt_name)
+    opt_pid = opt_pid.format(name=opt_name)
+    opt_cfgdir = opt_cfgdir.format(name=opt_name)
+
+    sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+    sys.path.append(os.path.abspath(os.path.dirname(__file__))+'/cfg')
+    sys.path.append(opt_cfgdir)
+
+    logger = logging.getLogger(opt_name)
+    logger.setLevel(logging.DEBUG)
+    logger.propagate = False
+    fh = TimedRotatingFileHandler(opt_log, 'midnight', 1, encoding='utf-8')
+    fh.setLevel(logging.DEBUG)
+    logger.addHandler(fh)
+    fh = logging.FileHandler('/dev/stderr', 'w')
+    fh.setLevel(logging.DEBUG)
+    logger.addHandler(fh)
+
+    sys.excepthook = log_uncaught_exceptions
+
+    main()
