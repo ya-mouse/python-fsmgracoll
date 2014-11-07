@@ -96,7 +96,7 @@ if __name__ == '__main__':
     sys.path.append(os.path.abspath(os.path.dirname(__file__))+'/cfg')
     sys.path.append(opt_cfgdir)
 
-    logger = logging.getLogger(opt_name)
+    logger = logging.getLogger('default')
     logger.setLevel(logging.DEBUG)
     logger.propagate = False
     fh = TimedRotatingFileHandler(opt_log, 'midnight', 1, encoding='utf-8')
