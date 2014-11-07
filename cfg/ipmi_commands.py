@@ -1,3 +1,5 @@
+from struct import pack, unpack
+
 ipmi_sdrs = {
     'TEMP_CPU0': 'temp.cpu0',
     'TEMP_CPU1': 'temp.cpu1',
