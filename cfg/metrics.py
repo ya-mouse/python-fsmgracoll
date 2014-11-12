@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from fsmgracoll import snmp, ipmi, ssh2
-from fsmgracoll.snmp import *
+from fsmgracoll import *
 
 from ipmi_commands import *
 
 config = [
 
-  { 'host': '192.168.0.100',
+  { 'host': '192.168.1.110',
     'type': snmp.SnmpUdpAgent,
-    'tag': ('five_sec.Energy',),
+    'tag': ('M3.five_sec.MYT.Energy',),
     'interval': 4.0,
     'version': '1',
     'community': 'public',
@@ -37,21 +36,39 @@ config = [
     }
   },
 
-  { 'host': '192.168.0.101',
+  { 'host': '192.168.1.112',
     'type': ipmi.IpmiUdpAgent,
-    'tag': ('M3.five_sec.locations.RU.FOL-A.testlab.GIGABYTE2.x.100321130',),
+    'tag': ('IPMI',),
     'interval': 5.0,
     'sdrs': ipmi_sdrs,
     'vendors': ipmi_ven,
     'cmds': ipmi_cmds,
   },
 
-  { 'host': '192.168.0.1',
+  { 'host': '192.168.1.113',
     'type': ssh2.SSHAgent,
     'tag': ('SSH',),
     'interval': 5.0,
-    'user': 'user',
-    'passwd': 'password',
+    'user': 'ADMIN',
+    'passwd': 'ADMIN',
     'cmds': ('echo A.b.c 123.3','echo D.e.f 5555.0'),
   },
+
+  { 'host': '192.168.1.114',
+    'type': modbus.ModbusTcpAgent,
+    'tag': ('MBUS',),
+    'interval': 3.0,
+    'slave': 1,
+    'func': 4,
+    'regs': [ { 'offset': 256,
+        'read': 4,                     # registers' number to read at once
+        'total': 4,                    # total registers' number
+        'points': {
+'U_2_01.temp' : [ 0, TYPE_INT16, 1.0 ],
+'U_2_01.humidity' : [ 1, TYPE_INT16, 1.0 ],
+'U_2_01.CO2': [ 2, TYPE_INT16, 1.0 ],
+'U_2_01.VOC': [ 3, TYPE_INT16, 1.0 ],
+        }
+    } ]
+  }
 ]
