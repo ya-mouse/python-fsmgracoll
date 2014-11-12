@@ -18,6 +18,7 @@ class SnmpUdpAgent(proto.snmp.SnmpUdpClient, AgentClient):
 
     def on_disconnect(self):
         # Do not actually remove ourself from async
+        pass
 
     def stop(self):
         # Run forever
