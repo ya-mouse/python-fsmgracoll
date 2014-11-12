@@ -1,11 +1,8 @@
+from time import time
 from fsmsock import proto
 
 from .agent import AgentClient
-
-TYPE_INT16      = 1
-TYPE_UINT16     = 2
-TYPE_UINT32     = 3
-TYPE_FLOAT32    = 5
+from .types import *
 
 class SnmpUdpAgent(proto.snmp.SnmpUdpClient, AgentClient):
     def __init__(self, agent, host, type, tag, interval, version, community, points):
@@ -20,9 +17,7 @@ class SnmpUdpAgent(proto.snmp.SnmpUdpClient, AgentClient):
         self._agent.send(self._tag[0]+'.'+d[0]+self._tag[1], v, tm)
 
     def on_disconnect(self):
-        print('ON DISCON')
         # Do not actually remove ourself from async
-        self.disconnect()
 
     def stop(self):
         # Run forever
