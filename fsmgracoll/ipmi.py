@@ -9,6 +9,10 @@ class IpmiUdpAgent(IpmiUdpClient, AgentClient):
         IpmiUdpClient.__init__(self, host, interval, user, passwd, cmds, vendors, sdrs)
         AgentClient.__init__(self, agent, type, tag)
 
+    def on_disconnect(self):
+        # Do not actually remove ourself from async
+        pass
+
     def on_data(self, point, val, tm):
         self._agent(self._tag[0]+'.'+point+self._tag[1], val, tm)
 
