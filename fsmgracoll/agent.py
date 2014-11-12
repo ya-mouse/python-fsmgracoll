@@ -80,7 +80,6 @@ def collector(name, cfg, agent, logger, do_profile):
 
     fsm = async.FSMSock()
 
-    i = 0
     for rtu in cfg:
         client = rtu['type'](agent=agent, **rtu)
         fsm.connect(client)
