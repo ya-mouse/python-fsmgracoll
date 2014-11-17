@@ -2,6 +2,7 @@ import os, sys
 import socket
 import signal
 import cProfile
+import logging
 from zlib import crc32
 from setproctitle import setproctitle
 
@@ -55,7 +56,7 @@ class Graphite:
                 if tm + 3.0 >= self._tm:
                     self._connect(tm)
 
-def collector(name, cfg, agent, logger, do_profile):
+def collector(name, cfg, agent, do_profile):
     setproctitle(name)
 
     if do_profile:

@@ -13,8 +13,8 @@ from logging.handlers import TimedRotatingFileHandler
 from fsmgracoll import collector, Graphite
 
 def log_uncaught_exceptions(ex_cls, ex, tb):
-    logger.critical(''.join(traceback.format_tb(tb)))
-    logger.critical('{0}: {1}'.format(ex_cls, ex))
+    logging.critical(''.join(traceback.format_tb(tb)))
+    logging.critical('{0}: {1}'.format(ex_cls, ex))
 
 def main():
     procs = []
@@ -45,7 +45,7 @@ def main():
         a = Graphite(opt_graphite[0], opt_graphite[1])
         begin = len(config) - cnt
         end = begin + min(cnt, wks)
-        p = multiprocessing.Process(target = collector, args = (opt_name+'-'+str(begin)+'-'+str(end), config[begin:end], a, logger, opt_profile))
+        p = multiprocessing.Process(target = collector, args = (opt_name+'-'+str(begin)+'-'+str(end), config[begin:end], a, opt_profile))
         procs.append(p)
         p.daemon = True
         p.start()
@@ -96,15 +96,13 @@ if __name__ == '__main__':
     sys.path.append(os.path.abspath(os.path.dirname(__file__))+'/cfg')
     sys.path.append(opt_cfgdir)
 
-    logger = logging.getLogger('default')
-    logger.setLevel(logging.DEBUG)
-    logger.propagate = False
-    fh = TimedRotatingFileHandler(opt_log, 'midnight', 1, encoding='utf-8')
-    fh.setLevel(logging.DEBUG)
-    logger.addHandler(fh)
-    fh = logging.FileHandler('/dev/stderr', 'w')
-    fh.setLevel(logging.DEBUG)
-    logger.addHandler(fh)
+    fh = [
+        TimedRotatingFileHandler(opt_log, 'midnight', 1, encoding='utf-8'),
+        logging.FileHandler('/dev/stderr', 'w')
+    ]
+    fh[0].setLevel(logging.DEBUG)
+    fh[1].setLevel(logging.DEBUG)
+    logging.basicConfig(format='%(levelname)-8s [%(asctime)s] %(message)s', level=logging.DEBUG, handlers=fh)
 
     sys.excepthook = log_uncaught_exceptions
 

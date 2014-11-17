@@ -2,6 +2,7 @@ from time import time
 from struct import pack, unpack
 from fsmsock import proto
 from fsmodbus.proto import *
+import logging
 
 from .agent import AgentClient
 from .types import *
@@ -10,7 +11,7 @@ class ModbusAgentClient(AgentClient):
     def on_data(self, bufidx, response, tm):
         for k, d in self._regs[bufidx]['points'].items():
             v = ModbusAgentClient._get_value(response, d[0], d[1]) / d[2]
-#            self._l.debug((self._tag[0]+".%s %.3f %.3f") % (k, v, tm))
+#            logging.debug((self._tag[0]+".%s %.3f %.3f") % (k, v, tm))
             self._agent.send(self._tag[0]+'.'+k+self._tag[1], v, tm)
 
     @staticmethod

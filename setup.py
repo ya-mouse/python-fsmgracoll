@@ -14,7 +14,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='python-fsmgracoll',
-    version='0.1',
+    version='0.2',
     description='Finite State Machine Graphite collectors for Python',
     author='Anton D. Kachalov',
     scripts=['gracolly'],
