@@ -36,7 +36,7 @@ class ModbusTcpAgent(ModbusTcpClient, ModbusAgentClient):
 
     def stop(self):
         # Run forever
-        self._expire = time() + 5.0
+        self._expire = time() + self._interval
 
 class ModbusRtuAgent(ModbusRtuClient, ModbusAgentClient):
     def __init__(self, agent, host, type, tag, interval, slave, func, serial, regs):
@@ -48,7 +48,7 @@ class ModbusRtuAgent(ModbusRtuClient, ModbusAgentClient):
 
     def stop(self):
         # Run forever
-        self._expire = time() + 5.0
+        self._expire = time() + self._interval
 
 class ModbusRealcomAgent(ModbusRealcomClient, ModbusAgentClient):
     def __init__(self, agent, host, type, tag, interval, slave, func, serial, realcom_port, regs):
@@ -60,4 +60,4 @@ class ModbusRealcomAgent(ModbusRealcomClient, ModbusAgentClient):
 
     def stop(self):
         # Run forever
-        self._expire = time() + 5.0
+        self._expire = time() + self._interval

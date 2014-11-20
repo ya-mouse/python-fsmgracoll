@@ -22,7 +22,7 @@ class SnmpUdpAgent(proto.snmp.SnmpUdpClient, AgentClient):
 
     def stop(self):
         # Run forever
-        self._expire = time() + 5.0
+        self._expire = time() + self._interval
 
     @staticmethod
     def _get_value(v, t):
