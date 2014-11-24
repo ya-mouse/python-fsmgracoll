@@ -9,10 +9,10 @@ from .types import *
 
 class ModbusAgentClient(AgentClient):
     def on_data(self, bufidx, response, tm):
-        for k, d in self._regs[bufidx]['points'].items():
-            v = ModbusAgentClient._get_value(response, d[0], d[1]) / d[2]
-#            logging.debug((self._tag[0]+".%s %.3f %.3f") % (k, v, tm))
-            self._agent.send(self._tag[0]+'.'+k+self._tag[1], v, tm)
+        for regnum, data in self._regs[bufidx]['points'].items():
+            v = ModbusAgentClient._get_value(response, regnum, data[0]) / data[1]
+            data[2](self, tm, v, data[3])
+#            logging.debug((self._tag[0]+".%s %.3f %.3f") % (data[3], v, tm))
 
     @staticmethod
     def _get_value(r, idx, t):
@@ -25,6 +25,16 @@ class ModbusAgentClient(AgentClient):
         elif t == TYPE_FLOAT32:
             return unpack('f', pack('I', ((r[idx] << 16) | r[idx + 1]) ))[0]
         return None
+
+    @classmethod
+    def _send_register(cls, obj, tm, value, point):
+        obj._agent.send(obj._tag[0]+'.'+point+obj._tag[1], value, tm)
+
+    @classmethod
+    def _send_bits(cls, obj, tm, value, bits):
+        value = int(value)
+        for bit, point in bits.items():
+            obj._agent.send(obj._tag[0]+'.'+point+obj._tag[1], (value & (1 << bit)) >> bit, tm)
 
 class ModbusTcpAgent(ModbusTcpClient, ModbusAgentClient):
     def __init__(self, agent, host, type, tag, interval, slave, func, regs):
