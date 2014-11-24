@@ -18,6 +18,7 @@ def log_uncaught_exceptions(ex_cls, ex, tb):
 
 def main():
     procs = []
+    multiprocessing.set_start_method('spawn')
 
     setproctitle(opt_name+'-main')
 
