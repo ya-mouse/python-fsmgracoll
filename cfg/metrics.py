@@ -8,7 +8,7 @@ config = [
 
   { 'host': '192.168.1.110',
     'type': snmp.SnmpUdpAgent,
-    'tag': ('M3.five_sec.MYT.Energy',),
+    'tag': ('SNMP',),
     'interval': 4.0,
     'version': '1',
     'community': 'public',
@@ -64,10 +64,10 @@ config = [
         'read': 4,                     # registers' number to read at once
         'total': 4,                    # total registers' number
         'points': {
-'U_2_01.temp' : [ 0, TYPE_INT16, 1.0 ],
-'U_2_01.humidity' : [ 1, TYPE_INT16, 1.0 ],
-'U_2_01.CO2': [ 2, TYPE_INT16, 1.0 ],
-'U_2_01.VOC': [ 3, TYPE_INT16, 1.0 ],
+0: [ TYPE_INT16, 1.0, modbus.ModbusAgentClient._send_bits, { 0: 'U_2_01.temp.0', 1: 'U.1', 2: 'U.2' } ],
+1: [ TYPE_INT16, 1.0, modbus.ModbusAgentClient._send_register, 'U_2_01.humidity' ],
+2: [ TYPE_INT16, 1.0, modbus.ModbusAgentClient._send_register, 'U_2_01.CO2' ],
+3: [ TYPE_INT16, 1.0, modbus.ModbusAgentClient._send_register, 'U_2_01.VOC' ],
         }
     } ]
   }
