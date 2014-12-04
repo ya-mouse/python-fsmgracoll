@@ -1,14 +1,14 @@
 from time import time
-from fsmsock import proto
+from fsmsnmp import proto
 
 from .agent import AgentClient
 from .types import *
 
-class SnmpUdpAgent(proto.snmp.SnmpUdpClient, AgentClient):
+class SnmpUdpAgent(proto.SnmpUdpClient, AgentClient):
     def __init__(self, agent, host, type, tag, interval, version, community, points):
         self._points = points
         self._oids = { d[0] : [ k, d ] for k, d in self._points.items() }
-        proto.snmp.SnmpUdpClient.__init__(self, host, interval, version, community, [x[0] for x in self._points.values()])
+        proto.SnmpUdpClient.__init__(self, host, interval, version, community, [x[0] for x in self._points.values()])
         AgentClient.__init__(self, agent, type, tag)
 
     def on_data(self, oid, val, tm):
