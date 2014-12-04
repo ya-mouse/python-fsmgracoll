@@ -27,6 +27,8 @@ class AgentClient():
             self._agent = lambda x,y,z: print(x,y,z)
 
 class Graphite:
+#    i = 1
+
     def __init__(self, hostname='localhost', port=42000):
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._sock.settimeout(5)
@@ -36,7 +38,9 @@ class Graphite:
             self._sock.setsockopt(level, name, val)
         self._hostname = hostname
         self._port = port
+#        self._fp = open('/tmp/graphite-m3-{0}.log'.format(Graphite.i), 'w+')
         self._connect(0)
+#        Graphite.i += 1
 
     def _connect(self, tm):
         self._tm = tm
@@ -46,7 +50,7 @@ class Graphite:
         self.send(*args, **kwargs)
 
     def send(self, key, val, tm):
-#        print("%s %.3f %lu" % (key, val, tm))
+#        self._fp.write("%s %.3f %lu\n" % (key, val, tm))
         try:
             self._sock.send(bytes("%s %.3f %lu\n" % (key, val, tm), 'ascii'))
         except socket.error as why:
