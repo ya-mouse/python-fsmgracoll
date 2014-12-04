@@ -18,4 +18,7 @@ class IpmiUdpAgent(IpmiUdpClient, AgentClient):
 
     def stop(self):
         # Run forever
+        #rc = self._relog()
         self._expire = time() + self._interval
+        self._timeout = self._expire + 15.0
+        return False
