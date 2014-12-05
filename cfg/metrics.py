@@ -54,6 +54,13 @@ config = [
     'cmds': ('echo A.b.c 123.3','echo D.e.f 5555.0'),
   },
 
+  { 'host': '192.168.1.115',
+    'type': netcat.NetcatUdpAgent,  # ask data with "get" word and read answer until "END" word
+    'tag': ('NETCAT',),
+    'interval': 5.0,
+    'port': 1500, # this is default port number
+  },
+
   { 'host': '192.168.1.114',
     'type': modbus.ModbusTcpAgent,
     'tag': ('MBUS',),
