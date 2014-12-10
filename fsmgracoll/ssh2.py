@@ -24,6 +24,7 @@ class SSHAgent(SSHClient, AgentClient):
     def stop(self):
         # Run forever
         self._expire = time() + self._interval
+        self._timeout = self._expire + 15.0
 
 if __name__ == '__main__':
     import sys

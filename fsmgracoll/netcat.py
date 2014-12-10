@@ -39,3 +39,4 @@ class NetcatUdpAgent(UdpTransport, AgentClient):
     def stop(self):
         # Run forever
         self._expire = time() + self._interval
+        self._timeout = self._expire + 15.0
