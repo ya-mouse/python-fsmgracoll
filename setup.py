@@ -1,5 +1,5 @@
-from Cython.Build import cythonize
-from Cython.Distutils import build_ext
+#from Cython.Build import cythonize
+#from Cython.Distutils import build_ext
 from setuptools import setup, find_packages
 from distutils.core import Extension
 
@@ -22,13 +22,13 @@ exts = [
 
 setup(
     name='python-fsmgracoll',
-    version='0.3',
+    version='0.2',
     description='Finite State Machine Graphite collectors for Python',
     author='Anton D. Kachalov',
     scripts=['gracolly'],
     packages=find_packages(),
-    ext_package='fsmgracoll',
-    ext_modules=cythonize(exts),
+#    ext_package='fsmgracoll',
+#    ext_modules=cythonize(exts),
     platforms='any',
     zip_safe=False,
     include_package_data=True,
