@@ -44,6 +44,11 @@ class ModbusTcpAgent(ModbusTcpClient, ModbusAgentClient):
     def on_data(self, *args):
         ModbusAgentClient.on_data(self, *args)
 
+    def on_disconnect(self):
+        super().on_disconnect()
+        if self._sock:
+            self._sock.close()
+
     def stop(self):
         # Run forever
         self._expire = time() + self._interval
@@ -57,6 +62,11 @@ class ModbusRtuAgent(ModbusRtuClient, ModbusAgentClient):
     def on_data(self, *args):
         ModbusAgentClient.on_data(self, *args)
 
+    def on_disconnect(self):
+        super().on_disconnect()
+        if self._sock:
+            self._sock.close()
+
     def stop(self):
         # Run forever
         self._expire = time() + self._interval
@@ -69,6 +79,13 @@ class ModbusRealcomAgent(ModbusRealcomClient, ModbusAgentClient):
 
     def on_data(self, *args):
         ModbusAgentClient.on_data(self, *args)
+
+    def on_disconnect(self):
+        super().on_disconnect()
+        if self._sock:
+            self._sock.close()
+        if self._cmd._sock:
+            self._cmd._sock.close()
 
     def stop(self):
         # Run forever
