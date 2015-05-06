@@ -54,6 +54,24 @@ class ModbusTcpAgent(ModbusTcpClient, ModbusAgentClient):
         self._expire = time() + self._interval
         self._timeout = self._expire + 15.0
 
+class ModbusBatchAgent(ModbusBatchClient, ModbusAgentClient):
+    def __init__(self, agent, host, type, tag, interval, slave, func, regs):
+        ModbusBatchClient.__init__(self, host, interval, slave, func, regs)
+        ModbusAgentClient.__init__(self, agent, type, tag)
+
+    def on_data(self, *args):
+        ModbusAgentClient.on_data(self, *args)
+
+    def on_disconnect(self):
+        super().on_disconnect()
+        if self._sock:
+            self._sock.close()
+
+    def stop(self):
+        # Run forever
+        self._expire = time() + self._interval
+        self._timeout = self._expire + 15.0
+
 class ModbusRtuAgent(ModbusRtuClient, ModbusAgentClient):
     def __init__(self, agent, host, type, tag, interval, slave, func, serial, regs):
         ModbusRtuClient.__init__(self, host, interval, slave, func, serial, regs)
