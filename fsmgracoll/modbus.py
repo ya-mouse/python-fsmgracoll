@@ -59,8 +59,10 @@ class ModbusBatchAgent(ModbusBatchClient, ModbusAgentClient):
         ModbusBatchClient.__init__(self, host, interval, slave, func, regs)
         ModbusAgentClient.__init__(self, agent, type, tag)
 
-    def on_data(self, *args):
-        ModbusAgentClient.on_data(self, *args)
+    def on_data(self, points, response, tm):
+        for regnum, data in points:
+            v = ModbusAgentClient._get_value(response, regnum, data[0]) / data[1]
+            data[2](self, tm, v, data[3])
 
     def on_disconnect(self):
         super().on_disconnect()
