@@ -1,4 +1,5 @@
 TYPE_INT16      = 1
 TYPE_UINT16     = 2
 TYPE_UINT32     = 3
+TYPE_INT32      = 4
 TYPE_FLOAT32    = 5
