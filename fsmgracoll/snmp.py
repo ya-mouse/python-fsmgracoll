@@ -12,9 +12,12 @@ class SnmpUdpAgent(proto.SnmpUdpClient, AgentClient):
         AgentClient.__init__(self, agent, type, tag)
 
     def on_data(self, oid, val, tm):
-        d = self._oids[str(oid)]
-        v = float(SnmpUdpAgent._get_value(val, d[1][1])) / d[1][2]
-        self._agent.send(self._tag[0]+'.'+d[0]+self._tag[1], v, tm)
+        try:
+            d = self._oids[str(oid)]
+            v = float(SnmpUdpAgent._get_value(val, d[1][1])) / d[1][2]
+            self._agent.send(self._tag[0]+'.'+d[0]+self._tag[1], v, tm)
+        except KeyError:
+            logging.warning('{}: unexpected OID received {}'.format(self._host, oid))
 
     def on_disconnect(self):
         # Do not actually remove ourself from async
