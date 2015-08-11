@@ -5,10 +5,10 @@ from .agent import AgentClient
 from .types import *
 
 class SnmpUdpAgent(proto.SnmpUdpClient, AgentClient):
-    def __init__(self, agent, host, type, tag, interval, version, community, points):
+    def __init__(self, agent, host, type, tag, interval, version, community, points, port=161):
         self._points = points
         self._oids = { d[0] : [ k, d ] for k, d in self._points.items() }
-        proto.SnmpUdpClient.__init__(self, host, interval, version, community, [x[0] for x in self._points.values()])
+        proto.SnmpUdpClient.__init__(self, host, interval, version, community, [x[0] for x in self._points.values()], port)
         AgentClient.__init__(self, agent, type, tag)
 
     def on_data(self, oid, val, tm):
