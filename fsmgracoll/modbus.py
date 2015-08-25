@@ -16,7 +16,9 @@ class ModbusAgentClient(AgentClient):
 
     @staticmethod
     def _get_value(r, idx, t):
-        if t == TYPE_INT16:
+        if t is None:
+            return None
+        elif t == TYPE_INT16:
             return unpack('h', pack('H', r[idx]))[0]
         elif t == TYPE_UINT16:
             return r[idx]
@@ -65,6 +67,7 @@ class ModbusBatchAgent(ModbusBatchClient, ModbusAgentClient):
         for regnum, data in points:
             v = ModbusAgentClient._get_value(response, regnum, data[0]) / data[1]
             data[2](self, tm, v, data[3])
+#            logging.debug('{}{} {:.3} {:.3}'.format(self._tag[0], data[3], v / data[1], tm))
 
     def on_disconnect(self):
         super().on_disconnect()
