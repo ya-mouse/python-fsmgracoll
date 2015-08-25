@@ -64,7 +64,7 @@ class Graphite:
                 if tm + 3.0 >= self._tm:
                     self._connect(tm)
 
-def collector(name, cfg, agent, do_profile):
+def collector(name, cfg, agent, do_profile, cfg_tick):
     setproctitle(name)
 
     if do_profile:
@@ -94,7 +94,7 @@ def collector(name, cfg, agent, do_profile):
         fsm.connect(client)
 
     while fsm.run():
-        fsm.tick()
+        fsm.tick(cfg_tick)
 
     #signal_handler(signal.SIGTERM, None)
     #os.kill(os.getpid(), signal.SIGTERM)
