@@ -1,3 +1,4 @@
+import logging
 from time import time
 from fsmsnmp import proto
 
