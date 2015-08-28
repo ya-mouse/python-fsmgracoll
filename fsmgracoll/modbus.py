@@ -10,7 +10,7 @@ from .types import *
 class ModbusAgentClient(AgentClient):
     def on_data(self, bufidx, response, tm):
         for regnum, data in self._regs[bufidx]['points'].items():
-            v = ModbusAgentClient._get_value(response, regnum, data[0]) / data[1]
+            v = ModbusAgentClient._get_value(response, regnum, data[0])
             if not v is None:
                 data[2](self, tm, v / data[1], data[3])
 #                logging.debug((self._tag[0]+".%s %.3f %.3f") % (data[3], v / data[1], tm))
