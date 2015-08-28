@@ -11,12 +11,13 @@ class ModbusAgentClient(AgentClient):
     def on_data(self, bufidx, response, tm):
         for regnum, data in self._regs[bufidx]['points'].items():
             v = ModbusAgentClient._get_value(response, regnum, data[0]) / data[1]
-            data[2](self, tm, v, data[3])
-#            logging.debug((self._tag[0]+".%s %.3f %.3f") % (data[3], v, tm))
+            if not v is None:
+                data[2](self, tm, v / data[1], data[3])
+#                logging.debug((self._tag[0]+".%s %.3f %.3f") % (data[3], v / data[1], tm))
 
     @staticmethod
     def _get_value(r, idx, t):
-        if t is None:
+        if t is None or r[0] is None:
             return None
         elif t == TYPE_INT16:
             return unpack('h', pack('H', r[idx]))[0]
@@ -41,33 +42,16 @@ class ModbusAgentClient(AgentClient):
             obj._agent.send(obj._tag[0]+'.'+point+obj._tag[1], (value & (1 << bit)) >> bit, tm)
 
 class ModbusTcpAgent(ModbusTcpClient, ModbusAgentClient):
-    def __init__(self, agent, host, type, tag, interval, slave, func, regs):
-        ModbusTcpClient.__init__(self, host, interval, slave, func, regs)
-        ModbusAgentClient.__init__(self, agent, type, tag)
-
-    def on_data(self, *args):
-        ModbusAgentClient.on_data(self, *args)
-
-    def on_disconnect(self):
-        super().on_disconnect()
-        if self._sock:
-            self._sock.close()
-
-    def stop(self):
-        # Run forever
-        self._expire = time() + self._interval
-        self._timeout = self._expire + 15.0
-
-class ModbusBatchAgent(ModbusBatchClient, ModbusAgentClient):
-    def __init__(self, agent, host, type, tag, interval, slave, func, regs):
-        ModbusBatchClient.__init__(self, host, interval, slave, func, regs)
+    def __init__(self, agent, host, type, tag, interval, slave, func, regs, rps=None):
+        ModbusTcpClient.__init__(self, host, interval, slave, func, regs, rps=rps)
         ModbusAgentClient.__init__(self, agent, type, tag)
 
     def on_data(self, points, response, tm):
         for regnum, data in points:
-            v = ModbusAgentClient._get_value(response, regnum, data[0]) / data[1]
-            data[2](self, tm, v, data[3])
-#            logging.debug('{}{} {:.3} {:.3}'.format(self._tag[0], data[3], v / data[1], tm))
+            v = ModbusAgentClient._get_value(response, regnum, data[0])
+            if v is not None:
+                data[2](self, tm, v / data[1], data[3])
+#                logging.debug('{}{} {:.3} {:.3}'.format(self._tag[0], data[3], v / data[1], tm))
 
     def on_disconnect(self):
         super().on_disconnect()
