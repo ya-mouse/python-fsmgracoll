@@ -16,8 +16,8 @@ class ModbusAgentClient(AgentClient):
             else:
                 p = (data[1], 0)
             if not v is None:
-                data[2](self, tm, v / p[0] - p[1], data[3])
-#                logging.debug((self._tag[0]+".%s %.3f %.3f") % (data[3], v / p[0] - p[1], tm))
+                data[2](self, tm, v / p[0] + p[1], data[3])
+#                logging.debug((self._tag[0]+".%s %.3f %.3f") % (data[3], v / p[0] + p[1], tm))
 #            else:
 #                logging.debug((self._tag[0]+".%s %s %.3f") % (data[3], v, tm))
 
@@ -63,8 +63,8 @@ class ModbusTcpAgent(ModbusTcpClient, ModbusAgentClient):
             else:
                 p = (data[1], 0)
             if v is not None:
-                data[2](self, tm, v / p[0] - p[1], data[3])
-#                logging.debug('{}{} {:.3} {:.3}'.format(self._tag[0], data[3], v / p[0] - p[1], tm))
+                data[2](self, tm, v / p[0] + p[1], data[3])
+#                logging.debug('{}{} {:.3} {:.3}'.format(self._tag[0], data[3], v / p[0] + p[1], tm))
 #            else:
 #                logging.debug('{}{} {} {}'.format(self._tag[0], data[3], v, tm))
 
