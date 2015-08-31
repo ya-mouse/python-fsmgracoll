@@ -11,12 +11,19 @@ class ModbusAgentClient(AgentClient):
     def on_data(self, bufidx, response, tm):
         for regnum, data in self._regs[bufidx]['points'].items():
             v = ModbusAgentClient._get_value(response, regnum, data[0])
+            if isinstance(data[1], list):
+                p = data[1]
+            else:
+                p = (data[1], 0)
             if not v is None:
-                data[2](self, tm, v / data[1], data[3])
-#                logging.debug((self._tag[0]+".%s %.3f %.3f") % (data[3], v / data[1], tm))
+                data[2](self, tm, v / p[0] - p[1], data[3])
+#                logging.debug((self._tag[0]+".%s %.3f %.3f") % (data[3], v / p[0] - p[1], tm))
+#            else:
+#                logging.debug((self._tag[0]+".%s %s %.3f") % (data[3], v, tm))
 
     @staticmethod
     def _get_value(r, idx, t):
+      try:
         if t is None or r[0] is None:
             return None
         elif t == TYPE_INT16:
@@ -29,6 +36,8 @@ class ModbusAgentClient(AgentClient):
             return unpack('i', pack('I', ((r[idx] << 16) | r[idx + 1]) ))[0]
         elif t == TYPE_FLOAT32:
             return unpack('f', pack('I', ((r[idx] << 16) | r[idx + 1]) ))[0]
+        return None
+      except:
         return None
 
     @classmethod
@@ -49,9 +58,15 @@ class ModbusTcpAgent(ModbusTcpClient, ModbusAgentClient):
     def on_data(self, points, response, tm):
         for regnum, data in points:
             v = ModbusAgentClient._get_value(response, regnum, data[0])
+            if isinstance(data[1], tuple):
+                p = data[1]
+            else:
+                p = (data[1], 0)
             if v is not None:
-                data[2](self, tm, v / data[1], data[3])
-#                logging.debug('{}{} {:.3} {:.3}'.format(self._tag[0], data[3], v / data[1], tm))
+                data[2](self, tm, v / p[0] - p[1], data[3])
+#                logging.debug('{}{} {:.3} {:.3}'.format(self._tag[0], data[3], v / p[0] - p[1], tm))
+#            else:
+#                logging.debug('{}{} {} {}'.format(self._tag[0], data[3], v, tm))
 
     def on_disconnect(self):
         super().on_disconnect()
