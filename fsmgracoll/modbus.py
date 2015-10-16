@@ -51,8 +51,8 @@ class ModbusAgentClient(AgentClient):
             obj._agent.send(obj._tag[0]+'.'+point+obj._tag[1], (value & (1 << bit)) >> bit, tm)
 
 class ModbusTcpAgent(ModbusTcpClient, ModbusAgentClient):
-    def __init__(self, agent, host, type, tag, interval, slave, func, regs, rps=None):
-        ModbusTcpClient.__init__(self, host, interval, slave, func, regs, rps=rps)
+    def __init__(self, agent, host, type, tag, interval, slave, func, regs, port=502, rps=None):
+        ModbusTcpClient.__init__(self, host, interval, slave, func, regs, port=port, rps=rps)
         ModbusAgentClient.__init__(self, agent, type, tag)
 
     def on_data(self, points, response, tm):
