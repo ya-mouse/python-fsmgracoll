@@ -11,6 +11,7 @@ class SnmpUdpAgent(proto.SnmpUdpClient, AgentClient):
         self._oids = { d[0] : [ k, d ] for k, d in self._points.items() }
         proto.SnmpUdpClient.__init__(self, host, interval, version, community, [x[0] for x in self._points.values()], port)
         AgentClient.__init__(self, agent, type, tag)
+        self._start = time()
 
     def on_data(self, oid, val, tm):
         try:
@@ -26,9 +27,10 @@ class SnmpUdpAgent(proto.SnmpUdpClient, AgentClient):
 
     def stop(self):
         # Run forever
-        self._expire = time() + self._interval
-        self._timeout = self._expire + 15.0
-        return True
+        self._expire = self._start + self._interval
+        self._start = self._expire
+        self._timeout = time() + 15.0
+        return False
 
     @staticmethod
     def _get_value(v, t):
