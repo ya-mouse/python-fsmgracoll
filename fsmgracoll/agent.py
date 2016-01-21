@@ -56,7 +56,7 @@ class Graphite:
     def send(self, key, val, tm):
 #        self._fp.write("%s %.3f %lu\n" % (key, val, tm))
         try:
-            self._sock.send(bytes("%s %.3f %lu\n" % (key, val, tm), 'ascii'))
+            self._sock.send(bytes("%s %.3f %lu\n" % (key, float(val), tm), 'ascii'))
         except socket.error as why:
             if why.args[0] in _DISCONNECTED:
                 # FIXME: make reconnect time 3.0s configurable
