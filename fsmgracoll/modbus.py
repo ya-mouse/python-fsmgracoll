@@ -48,7 +48,11 @@ class ModbusAgentClient(AgentClient):
     def _send_bits(cls, obj, tm, value, bits):
         value = int(value)
         for bit, point in bits.items():
-            obj._agent.send(obj._tag[0]+'.'+point+obj._tag[1], (value & (1 << bit)) >> bit, tm)
+            if type(bit) == int:
+                obj._agent.send(obj._tag[0]+'.'+point+obj._tag[1], (value >> bit) & 1, tm)
+            else: # type(bit) == tuple
+                mask = (1 << (bit[1] - bit[0] + 1)) - 1
+                obj._agent.send(obj._tag[0]+'.'+point+obj._tag[1], (value >> bit[0]) & mask, tm)
 
 class ModbusTcpAgent(ModbusTcpClient, ModbusAgentClient):
     def __init__(self, agent, host, type, tag, interval, slave, func, regs, port=502, rps=None):
