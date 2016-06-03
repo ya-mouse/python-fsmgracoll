@@ -64,15 +64,15 @@ class Graphite:
                 if tm + 3.0 >= self._tm:
                     self._connect(tm)
 
-def collector(name, cfg, agent, do_profile, cfg_tick):
+def collector(name, cfg, agent, options):
     setproctitle(name)
 
-    if do_profile:
+    if options['profile']:
         pr = cProfile.Profile()
         pr.enable()
 
     def signal_handler(signum, frame):
-        if do_profile:
+        if options['profile']:
             pr.disable()
             pr.create_stats()
             pr.dump_stats('{0}-{1}.prof'.format(name, os.getpid()))
@@ -93,8 +93,9 @@ def collector(name, cfg, agent, do_profile, cfg_tick):
         client = rtu['type'](agent=agent, **rtu)
         fsm.connect(client)
 
+    tick = options['tick']
     while fsm.run():
-        fsm.tick(cfg_tick)
+        fsm.tick(tick)
 
     #signal_handler(signal.SIGTERM, None)
     #os.kill(os.getpid(), signal.SIGTERM)
