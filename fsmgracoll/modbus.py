@@ -88,6 +88,38 @@ class ModbusTcpAgent(ModbusTcpClient, ModbusAgentClient):
         if not self._timeout:
             self._timeout = time() + 15.0
 
+class ModbusRtuUdpAgent(ModbusRtuUdpClient, ModbusAgentClient):
+    def __init__(self, agent, host, type, tag, interval, slave, func, regs, port=502, rps=None):
+        ModbusRtuUdpClient.__init__(self, host, interval, slave, func, regs, port=port, rps=rps)
+        ModbusAgentClient.__init__(self, agent, type, tag)
+        self._start = time()
+
+    def on_data(self, points, response, tm):
+        for regnum, data in points:
+            v = ModbusAgentClient._get_value(response, regnum, data[0])
+            if isinstance(data[1], tuple):
+                p = data[1]
+            else:
+                p = (data[1], 0)
+            if v is not None:
+                data[2](self, tm, v / p[0] + p[1], data[3])
+#                logging.debug('{}{} {:.3} {:.3}'.format(self._tag[0], data[3], v / p[0] + p[1], tm))
+#            else:
+#                logging.debug('{}{} {} {}'.format(self._tag[0], data[3], v, tm))
+
+    def on_disconnect(self):
+        super().on_disconnect()
+        if self._sock:
+            self._sock.close()
+
+    def stop(self):
+        # Run forever
+        if not self._expire:
+            self._expire = self._start + self._interval
+            self._start = self._expire
+        if not self._timeout:
+            self._timeout = time() + 15.0
+
 class ModbusRtuAgent(ModbusRtuClient, ModbusAgentClient):
     def __init__(self, agent, host, type, tag, interval, slave, func, serial, regs):
         ModbusRtuClient.__init__(self, host, interval, slave, func, serial, regs)
