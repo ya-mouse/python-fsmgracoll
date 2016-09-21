@@ -38,6 +38,12 @@ class ModbusAgentClient(AgentClient):
             return unpack('f', pack('I', ((r[idx] << 16) | r[idx + 1]) ))[0]
         elif t == TYPE_FLOAT16:
             return unpack('f', pack('I', (r[idx] << 16) ))[0]
+        elif t == TYPE_UINT32_le:
+            return (r[idx + 1] << 16) | r[idx]
+        elif t == TYPE_INT32_le:
+            return unpack('i', pack('I', ((r[idx + 1] << 16) | r[idx]) ))[0]
+        elif t == TYPE_FLOAT32_le:
+            return unpack('f', pack('I', ((r[idx + 1] << 16) | r[idx]) ))[0]
         return None
       except:
         return None
