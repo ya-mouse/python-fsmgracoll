@@ -1,6 +1,7 @@
 import logging
 from time import time
 from fsmsnmp import proto
+from struct import pack, unpack
 
 from .agent import AgentClient
 from .types import *
