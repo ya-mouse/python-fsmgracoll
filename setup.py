@@ -22,7 +22,7 @@ exts = [
 
 setup(
     name='python-fsmgracoll',
-    version='0.2',
+    version='0.3',
     description='Finite State Machine Graphite collectors for Python',
     author='Anton D. Kachalov',
     scripts=['gracolly'],

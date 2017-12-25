@@ -1,3 +1,4 @@
+TYPE_UINT8      = 0
 TYPE_INT16      = 1
 TYPE_UINT16     = 2
 TYPE_UINT32     = 3

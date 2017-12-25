@@ -4,6 +4,19 @@ from fsmgracoll import *
 
 from ipmi_commands import *
 
+rainbow_points = {
+  24: [ TYPE_FLOAT16, 10.0, 'outdoor_temp' ],
+  28: [ TYPE_FLOAT16, 10.0, 'indoor_temp' ],
+  32: [ TYPE_UINT16, 1, 'fan' ],
+  36: [ TYPE_UINT16, 1, 'throttle' ],
+  40: [ TYPE_UINT16, 1, 'home1' ],
+  44: [ TYPE_UINT16, 1, 'home2_1' ],
+  48: [ TYPE_UINT16, 1, 'home2_2' ],
+  52: [ TYPE_UINT8, 1, 'motor' ],
+  54: [ TYPE_FLOAT16, 10.0, 'temp1' ],
+  58: [ TYPE_FLOAT16, 10.0, 'temp2' ]
+}
+
 config = [
 
   { 'host': '192.168.1.110',
@@ -77,5 +90,15 @@ config = [
 3: [ TYPE_INT16, 1.0, modbus.ModbusAgentClient._send_register, 'U_2_01.VOC' ],
         }
     } ]
+  },
+
+  { 'host': '172.19.0.49',
+    'type': rainbow.RainbowTcpAgent,
+    'tag': ('RAINBOW',),
+    'interval': 3.0,
+    'cmds': [
+        [ 0x001, 0x006, rainbow_points ],
+        [ 0x002, 0x006, rainbow_points ]
+    ]
   }
 ]
