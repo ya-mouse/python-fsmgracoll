@@ -5,4 +5,5 @@ from .ssh2 import SSHClient
 from .modbus import ModbusTcpAgent
 from .netcat import NetcatUdpAgent
 from .rainbow import RainbowTcpAgent
+from .bacnet import BacnetUdpAgent
 from .types import *

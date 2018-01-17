@@ -100,5 +100,17 @@ config = [
         [ 0x001, 0x006, rainbow_points ],
         [ 0x002, 0x006, rainbow_points ]
     ]
+  },
+
+  { 'host': '37.9.91.58',
+    'type': bacnet.BacnetUdpAgent,
+    'tag': ('BACNET',),
+    'interval': 3.0,
+    'device': 77000,
+    'props': {
+        'A001' : [    1, bacnet.BacnetUdpAgent.APDU_OBJ_TYPE_ANALOG ],
+        'I132' : [ 1132, bacnet.BacnetUdpAgent.APDU_OBJ_TYPE_ANALOG ],
+        'D169' : [  169, bacnet.BacnetUdpAgent.APDU_OBJ_TYPE_BINARY ],
+    }
   }
 ]
