@@ -1,11 +1,11 @@
 from time import time
-from bacnet.proto import BacnetUdpClient
+from fsmbacnet.proto import BacnetUdpClient
 
 from .agent import AgentClient
 
 class BacnetUdpAgent(BacnetUdpClient, AgentClient):
     def __init__(self, agent, host, type, tag, interval, device, props):
-        BacnetUdppClient.__init__(self, host, interval, device, props)
+        BacnetUdpClient.__init__(self, host, interval, device, props)
         AgentClient.__init__(self, agent, type, tag)
 
     def on_disconnect(self):

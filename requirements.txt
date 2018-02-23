@@ -9,3 +9,4 @@ https://github.com/ya-mouse/python-fsmodbus/archive/master.zip#egg=python-fsmodb
 https://github.com/ya-mouse/python-fsmsnmp/archive/master.zip#egg=python-fsmsnmp
 https://github.com/ya-mouse/python-fsmrainbow/archive/master.zip#egg=python-fsmrainbow
 https://github.com/ya-mouse/python-fsmbacnet/archive/master.zip#egg=python-fsmbacnet
+https://github.com/ya-mouse/python-fsmhttp/archive/master.zip#egg=python-fsmhttp

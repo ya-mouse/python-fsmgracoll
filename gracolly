@@ -46,7 +46,7 @@ def main():
         a = Graphite(opt_graphite[0], opt_graphite[1])
         begin = len(config) - cnt
         end = begin + min(cnt, wks)
-        p = multiprocessing.Process(target = collector, args = (opt_name+'-'+str(begin)+'-'+str(end), config[begin:end], a, opt_profile, opt_tick))
+        p = multiprocessing.Process(target = collector, args = (opt_name+'-'+str(begin)+'-'+str(end), config[begin:end], a, {'profile':opt_profile, 'tick': opt_tick}))
         procs.append(p)
         p.daemon = True
         p.start()
@@ -87,6 +87,8 @@ if __name__ == '__main__':
             opt_graphite = a.split(r':')
             if len(opt_graphite) != 2:
                opt_graphite = [opt_graphite[0], 42000]
+            else:
+               opt_graphite[1] = int(opt_graphite[1])
         elif o == '--profile':
             opt_profile = True
         else:

@@ -112,5 +112,23 @@ config = [
         'I132' : [ 1132, bacnet.BacnetUdpAgent.APDU_OBJ_TYPE_ANALOG ],
         'D169' : [  169, bacnet.BacnetUdpAgent.APDU_OBJ_TYPE_BINARY ],
     }
+  },
+
+  { 'host': 'vla-01-a-09a.rmm.ipmi.yandex.net',
+    'type': obmchttp.OpenBmcHttpAgent,
+    'tag': ('HTTP',),
+    'interval': 3.0,
+    'user': 'root',
+    'passwd': '0penBmc',
+    'points': {
+        'zones': {
+            'nodes': {
+                'power': ['node.{location}.power', 1], 'cpu_temp': ['node.{location}.cpu_temp', 1]
+            },
+        },
+        'psus': {
+            'temp_out': [ 'psu.{location}.temp_out', 1000.0 ], 'v_in': [ 'psu.{location}.v_in', 1 ]
+        }
+    }
   }
 ]
