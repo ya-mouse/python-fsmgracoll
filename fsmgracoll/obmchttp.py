@@ -16,7 +16,9 @@ class OpenBmcHttpAgent(OpenBmcHttpClient, AgentClient):
         if val == 'na':
             return
         metric = point[0].format(**context)
-        self._agent(self._tag[0]+'.'+metric, float(val) / point[1] if point[1] != 1 else val, tm)
+        if len(point) == 2:
+            val = float(val) / point[1]
+        self._agent(self._tag[0]+'.'+metric+self._tag[1], val, tm)
 
     def stop(self):
         # Run forever
