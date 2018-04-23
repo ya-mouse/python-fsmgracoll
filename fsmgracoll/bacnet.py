@@ -12,7 +12,7 @@ class BacnetUdpAgent(BacnetUdpClient, AgentClient):
         pass
 
     def on_data(self, prop, val, tm):
-        self._agent(self._tag[0]+'.'+prop+self._tag[1], val, tm)
+        self._agent.send(self._tag[0]+'.'+prop+self._tag[1], val, tm)
 
     def stop(self):
         # Run forever
