@@ -29,7 +29,7 @@ class RainbowTcpAgent(RainbowTcpClient, AgentClient):
             else:
                 continue
 
-            self._agent(self._tag[0]+'.'+info[2], v, tm)
+            self._agent.send(self._tag[0]+'.'+info[2]+self._tag[1], v, tm)
 
     def stop(self):
         # Run forever
